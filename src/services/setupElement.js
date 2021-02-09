@@ -14,6 +14,14 @@ import {
   ElSkeletonItem,
   ElInput,
   ElAutocomplete,
+  ElForm,
+  ElFormItem,
+  ElIcon,
+  ElAlert,
+  ElRadio,
+  ElCollapse,
+  ElCollapseItem,
+  ElPagination,
 } from 'element-plus';
 
 const setupElement = {
@@ -33,6 +41,14 @@ const setupElement = {
       .use(ElSkeletonItem)
       .use(ElInput)
       .use(ElAutocomplete)
+      .use(ElForm)
+      .use(ElFormItem)
+      .use(ElIcon)
+      .use(ElAlert)
+      .use(ElRadio)
+      .use(ElCollapse)
+      .use(ElCollapseItem)
+      .use(ElPagination)
   }
 }
 

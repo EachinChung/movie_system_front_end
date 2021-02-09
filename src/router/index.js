@@ -19,6 +19,17 @@ const routes = [
     ],
   },
   {
+    path: '/login',
+    name: 'Login',
+    component: () => import('../views/Login'),
+  },
+  //
+  {
+    path: '/signup',
+    name: 'SignUp',
+    component: () => import('../views/SignUp'),
+  },
+  {
     path: '/:pathMatch(.*)*',
     name: '404',
     component: () => import('../views/NotFound'),

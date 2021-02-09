@@ -10,7 +10,6 @@
             placeholder="请输入内容"
             @select="handleSelect"
           ></el-autocomplete>
-
         </div>
       </el-header>
       <el-main>
@@ -43,6 +42,7 @@ import {useRouter} from "vue-router"
 import {ref, onMounted} from 'vue'
 import {getDoubanTop250Api} from '@/api/douban'
 import {getSearchMovies} from "@/api/movies";
+import {checkLogin} from "@/services/token";
 
 
 export default {
@@ -83,7 +83,13 @@ export default {
         }
       })
     }
-    return {state: ref(''), doubanTop25, querySearchAsync, handleSelect}
+    return {
+      state: ref(''),
+      doubanTop25,
+      querySearchAsync,
+      handleSelect,
+      checkLogin
+    }
   },
 }
 </script>
@@ -101,6 +107,7 @@ export default {
       margin: 0;
     }
 
+    min-width: 1200px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
     z-index: 99;
     display: flex;

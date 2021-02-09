@@ -36,7 +36,7 @@ requests.interceptors.response.use(
       if (res.data.code === "0000") {
         const tokens = res.data.data
         handleToken(tokens)
-        response.config.headers.Authorization = `Bearer ${tokens.accessToken}`
+        response.config.headers.Authorization = `Bearer ${tokens.access_token}`
         return axios(response.config)
       } else {
         localStorage.clear()
