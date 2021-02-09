@@ -1,3 +1,4 @@
+<!--suppress CssInvalidPropertyValue -->
 <template>
   <div class="main">
     <el-skeleton :rows="5" :loading="loading" animated>

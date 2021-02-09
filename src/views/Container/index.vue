@@ -10,12 +10,13 @@
             placeholder="请输入内容"
             @select="handleSelect"
           ></el-autocomplete>
+
         </div>
       </el-header>
       <el-main>
         <el-row>
           <el-col :span="20" :gutter="40">
-            <router-view />
+            <router-view/>
           </el-col>
           <el-col :span="4">
             <div class="top25">
@@ -26,7 +27,7 @@
                 >
                   {{ item.title }}
                 </el-link>
-                <br />
+                <br/>
               </span>
             </div>
           </el-col>
@@ -37,12 +38,17 @@
 </template>
 
 <script>
-import { useStore } from 'vuex'
-import { ref, onMounted } from 'vue'
-import { getDoubanTop250Api } from '@/api/douban'
+import {useStore} from 'vuex'
+import {useRouter} from "vue-router"
+import {ref, onMounted} from 'vue'
+import {getDoubanTop250Api} from '@/api/douban'
+import {getSearchMovies} from "@/api/movies";
+
+
 export default {
   name: 'Container',
   setup() {
+    const router = useRouter()
     const store = useStore()
     const doubanTop25 = ref([])
     onMounted(async () => {
@@ -51,16 +57,33 @@ export default {
       doubanTop25.value.pop()
       store.commit('upDoubanTop24', doubanTop25.value)
     })
-    
+
+
+    let timeout;
     const querySearchAsync = async (queryString, cb) => {
-      console.log(queryString, cb)
-      cb([{value:"asd",asd:123}])
+      clearTimeout(timeout);
+      timeout = setTimeout(async () => {
+        const result = await getSearchMovies({q: queryString})
+        const loadAll = []
+        for (let item of result) {
+          if (item.type !== "movie") continue
+          loadAll.push({value: item.title, ...item})
+        }
+        cb(loadAll)
+      }, 1000)
     }
 
     const handleSelect = (item) => {
       console.log(item)
+      router.push({
+        path: "/movies", query: {
+          douban_url: item.url,
+          name: item.title,
+          douban_type: item.type
+        }
+      })
     }
-    return { state: ref(''), doubanTop25, querySearchAsync, handleSelect }
+    return {state: ref(''), doubanTop25, querySearchAsync, handleSelect}
   },
 }
 </script>
@@ -77,7 +100,7 @@ export default {
       font-size: 18px;
       margin: 0;
     }
-    min-width: 1400px;
+
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
     z-index: 99;
     display: flex;

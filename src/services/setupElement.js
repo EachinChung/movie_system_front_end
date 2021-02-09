@@ -17,7 +17,7 @@ import {
 } from 'element-plus';
 
 const setupElement = {
-  install: (app) => {
+  install: app => {
     app.use(ElButton)
       .use(ElContainer)
       .use(ElHeader)
