@@ -2,7 +2,7 @@
   <div>
     <el-container>
       <el-header>
-        <h3>电影信息展示平台</h3>
+        <h3 @click="$router.push('/')">电影信息展示平台</h3>
         <div>
           <el-autocomplete
             v-model="state"
