@@ -9,13 +9,20 @@
             :fetch-suggestions="querySearchAsync"
             placeholder="请输入内容"
             @select="handleSelect"
-          ></el-autocomplete>
+            style="margin-right: 24px"
+          />
+          <span v-if="isLogin" style="color: #fff; cursor: pointer;" @click="logout">
+            退出登录
+          </span>
+          <span v-else style="color: #fff; cursor: pointer;" @click="$router.push('/login')">
+            登录
+          </span>
         </div>
       </el-header>
       <el-main>
         <el-row>
           <el-col :span="20" :gutter="40">
-            <router-view/>
+            <router-view />
           </el-col>
           <el-col :span="4">
             <div class="top25">
@@ -26,7 +33,7 @@
                 >
                   {{ item.title }}
                 </el-link>
-                <br/>
+                <br />
               </span>
             </div>
           </el-col>
@@ -37,13 +44,12 @@
 </template>
 
 <script>
-import {useStore} from 'vuex'
-import {useRouter} from "vue-router"
-import {ref, onMounted} from 'vue'
-import {getDoubanTop250Api} from '@/api/douban'
-import {getSearchMovies} from "@/api/movies";
-import {checkLogin} from "@/services/token";
-
+import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
+import { ref, onMounted } from 'vue'
+import { getDoubanTop250Api } from '@/api/douban'
+import { getSearchMovies } from '@/api/movies'
+import { checkLogin } from '@/services/token'
 
 export default {
   name: 'Container',
@@ -51,23 +57,25 @@ export default {
     const router = useRouter()
     const store = useStore()
     const doubanTop25 = ref([])
+    const isLogin = ref(false)
+
     onMounted(async () => {
+      isLogin.value = checkLogin()
       const data = await getDoubanTop250Api()
       doubanTop25.value = data.top250
       doubanTop25.value.pop()
       store.commit('upDoubanTop24', doubanTop25.value)
     })
 
-
-    let timeout;
+    let timeout
     const querySearchAsync = async (queryString, cb) => {
-      clearTimeout(timeout);
+      clearTimeout(timeout)
       timeout = setTimeout(async () => {
-        const result = await getSearchMovies({q: queryString})
+        const result = await getSearchMovies({ q: queryString })
         const loadAll = []
         for (let item of result) {
-          if (item.type !== "movie") continue
-          loadAll.push({value: item.title, ...item})
+          if (item.type !== 'movie') continue
+          loadAll.push({ value: item.title, ...item })
         }
         cb(loadAll)
       }, 1000)
@@ -76,19 +84,29 @@ export default {
     const handleSelect = (item) => {
       console.log(item)
       router.push({
-        path: "/movies", query: {
+        path: '/movies',
+        query: {
           douban_url: item.url,
           name: item.title,
-          douban_type: item.type
-        }
+          douban_type: item.type,
+        },
       })
     }
+
+    const logout = () => {
+      localStorage.clear()
+      store.commit('upAccessToken', null)
+      isLogin.value = false
+    }
+
     return {
       state: ref(''),
       doubanTop25,
       querySearchAsync,
       handleSelect,
-      checkLogin
+      checkLogin,
+      logout,
+      isLogin,
     }
   },
 }
